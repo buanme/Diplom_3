@@ -1,6 +1,6 @@
 import allure
 
-from auth import Auth
+from data import DataTest
 
 
 class TestFeedOrders:
@@ -13,7 +13,7 @@ class TestFeedOrders:
 
     @allure.title("Проверка, что созданный пользователем заказ отображается на странице Лента заказов")
     def test_displaying_user_orders(self, login_page, main_page, feed_page):
-        login_page.login(Auth.EMAIL, Auth.PASSWORD)
+        login_page.login(DataTest.TEST_EMAIL, DataTest.TEST_PASSWORD)
         main_page.drag_bun_to_basket()
         order_number = feed_page.create_order_and_get_number()
         feed_page.open()
@@ -23,7 +23,7 @@ class TestFeedOrders:
     def test_counter_alltime(self, main_page, feed_page, login_page):
         feed_page.open()
         old_value = feed_page.get_alltime_counter()
-        login_page.login(Auth.EMAIL, Auth.PASSWORD)
+        login_page.login(DataTest.TEST_EMAIL, DataTest.TEST_PASSWORD)
         main_page.drag_bun_to_basket()
         feed_page.create_order_and_get_number()
         feed_page.open()
@@ -34,7 +34,7 @@ class TestFeedOrders:
     def test_counter_today(self, main_page, feed_page, login_page):
         feed_page.open()
         old_value = feed_page.get_today_counter()
-        login_page.login(Auth.EMAIL, Auth.PASSWORD)
+        login_page.login(DataTest.TEST_EMAIL, DataTest.TEST_PASSWORD)
         main_page.drag_bun_to_basket()
         feed_page.create_order_and_get_number()
         feed_page.open()
@@ -43,7 +43,7 @@ class TestFeedOrders:
 
     @allure.title("Проверка, что номер оформленного заказа появляется в разделе 'В работе'")
     def test_order_in_work(self, main_page, feed_page, login_page):
-        login_page.login(Auth.EMAIL, Auth.PASSWORD)
+        login_page.login(DataTest.TEST_EMAIL, DataTest.TEST_PASSWORD)
         main_page.drag_bun_to_basket()
         order_number = feed_page.create_order_and_get_number()
         feed_page.open()

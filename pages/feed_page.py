@@ -1,5 +1,7 @@
 from selenium.webdriver.common.by import By
 import allure
+
+from data import DataTest
 from locators.main_page_locators import MainPageLocators
 from pages.base_page import BasePage
 from locators.feed_page_locators import FeedPageLocators
@@ -20,21 +22,21 @@ class FeedPage(BasePage):
     @allure.step("Проверка открытия модального окна")
     def modal_is_opened(self):
         self.wait_to_visibility((By.XPATH, FeedPageLocators.WINDOW_ORDER_HISTORY))
-        modal = self.driver.find_element(By.XPATH, FeedPageLocators.MODAL_WINDOW_ORDER_HISTORY)
-        return "opened" in modal.get_attribute("class")
+        modal_class = self.get_class_by_locator((By.XPATH, FeedPageLocators.MODAL_WINDOW_ORDER_HISTORY))
+        return DataTest.MODAL_OPENED in modal_class
 
     @allure.step("Создаем заказ")
     def create_order_and_get_number(self):
         self.click((By.XPATH, MainPageLocators.PLACE_ORDER_BUTTON))
         self.wait_to_visibility((By.XPATH, FeedPageLocators.ORDER_CREATE_OK))
-        self.wait.until(lambda d: d.find_element(By.XPATH, FeedPageLocators.ORDER_NUMBER).text != "9999")
+        self.wait_until(lambda d: d.find_element(By.XPATH, FeedPageLocators.ORDER_NUMBER).text != DataTest.NUMBER_PLACEHOLDER)
         order_number = self.get_text((By.XPATH, FeedPageLocators.ORDER_NUMBER))
         return f"#{int(order_number):07d}"  # переводим в формат #0000000
 
     @allure.step("Проверяем наличие заказа в списке заказов")
     def is_order_in_feed(self, order_number):
         self.wait_to_visibility((By.XPATH, FeedPageLocators.FEED_ORDERS))
-        orders_elements = self.driver.find_elements(By.XPATH, FeedPageLocators.FEED_ORDERS)
+        orders_elements = self.find_elements((By.XPATH, FeedPageLocators.FEED_ORDERS))
         return any(el.text in order_number for el in orders_elements)
 
     @allure.step("Счетчик 'Выполнено за все время'")
@@ -47,8 +49,8 @@ class FeedPage(BasePage):
 
     @allure.step("Проверяем наличие заказа 'В работе'")
     def is_order_in_work(self, order_number):
-        return any(el.text in order_number for el in self.driver.find_elements(By.XPATH, FeedPageLocators.ORDERS_IN_WORK))
+        return any(el.text in order_number for el in self.find_elements((By.XPATH, FeedPageLocators.ORDERS_IN_WORK)))
 
     @allure.step("Ждем наличие заказа 'В работе'")
     def wait_for_order_in_work(self, order_number):
-        self.wait.until(lambda d: any(el.text in order_number for el in d.find_elements(By.XPATH, FeedPageLocators.ORDERS_IN_WORK)))
+        self.wait_until(lambda d: any(el.text in order_number for el in d.find_elements(By.XPATH, FeedPageLocators.ORDERS_IN_WORK)))

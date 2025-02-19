@@ -48,3 +48,28 @@ class BasePage:
         source = self.driver.find_element(*source_locator)
         target = self.driver.find_element(*target_locator)
         ActionChains(self.driver).drag_and_drop(source, target).perform()
+
+    @allure.step("Получение текущей страницы")
+    def get_current_url(self):
+        return self.driver.current_url
+
+    @allure.step("Получение класса элемента")
+    def get_class_by_locator(self, locator):
+        return self.driver.find_element(*locator).get_attribute("class")
+
+    @allure.step("Получение текста")
+    def get_text_by_locator(self, locator):
+        return self.driver.find_element(*locator).text
+
+    @allure.step("Ввод текста")
+    def send_keys(self, locator, keys):
+        return self.driver.find_element(*locator).send_keys(keys)
+
+    @allure.step("Поиск элементов")
+    def find_elements(self, locator):
+        return self.driver.find_elements(*locator)
+
+    @allure.step("Ожидание")
+    def wait_until(self, l):
+        self.wait.until(l)
+

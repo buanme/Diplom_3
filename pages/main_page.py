@@ -1,5 +1,7 @@
 from selenium.webdriver.common.by import By
 import allure
+
+from data import DataTest
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from urls import Urls
@@ -27,7 +29,7 @@ class MainPage(BasePage):
     def is_ingredients_details_opened(self):
         title_text = self.get_text((By.XPATH, MainPageLocators.INGREDIENTS_DETAILS))
         bun_name = self.get_text((By.XPATH, MainPageLocators.BUN_R2_D3_DETAILS))
-        return title_text == "Детали ингредиента" and "Флюоресцентная булка R2-D3" in bun_name
+        return title_text == DataTest.INGREDIENTS_DETAILS_TEXT and DataTest.BUN_NAME in bun_name
 
     @allure.step("Закрытие модального окна ингедиента")
     def close_modal(self):
@@ -35,8 +37,8 @@ class MainPage(BasePage):
 
     @allure.step("Проверка открытия модального окна")
     def modal_is_opened(self):
-        modal_class = self.driver.find_element(By.XPATH, MainPageLocators.MODAL_WINDOW).get_attribute("class")
-        return "opened" in modal_class
+        modal_class = self.get_class_by_locator((By.XPATH, MainPageLocators.MODAL_WINDOW))
+        return DataTest.MODAL_OPENED in modal_class
 
     @allure.step("Добавление булки R2-D3 в корзину")
     def drag_bun_to_basket(self):
@@ -48,4 +50,4 @@ class MainPage(BasePage):
 
     @allure.step("Проверка наличия кнопки 'Оформить заказ'")
     def place_order_button_visible(self):
-        return self.driver.find_element(By.XPATH, MainPageLocators.PLACE_ORDER_BUTTON).text == 'Оформить заказ'
+        return self.get_text_by_locator((By.XPATH, MainPageLocators.PLACE_ORDER_BUTTON)) == DataTest.PLACE_ORDER
